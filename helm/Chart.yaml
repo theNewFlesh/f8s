@@ -1,0 +1,19 @@
+apiVersion: v2
+name: f8s
+version: 0.1.0
+home: https://github.com/theNewFlesh/f8s
+description: |
+  Framework for building K8s-ready Flask applications.
+keywords:
+  - Flask
+  - Kubernetes
+  - K8s
+  - F8s
+  - Helm
+  - ArgoCD
+type: application
+appVersion: "0.1.0"
+maintainers:
+  - name: Alex Braun
+    email: alexander.g.braun@gmail.com
+    url: http://www.alexgbraun.com

@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  f8s:
+    container_name: f8s
+    image: f8s:dev
+    build:
+      context: .
+      dockerfile: dev.dockerfile
+    ports:
+      - "7200:9000"
+      - "7280:8080"
+    userns_mode: "host"
+    user: ubuntu
+    env_file:
+      - config/dev-env
+    volumes:
+      - ../:/home/ubuntu/f8s
+      - ~/.ssh:/home/ubuntu/.ssh:ro
+      - ./config/jupyter:/home/ubuntu/.jupyter
+      - ./config/zshrc:/home/ubuntu/.zshrc
+    working_dir: "/home/ubuntu"

@@ -1,0 +1,29 @@
+source_rules:
+  - path: /home/ubuntu/f8s
+    include: "LICENSE|README\\.md"
+    exclude: "/\\.|docker"
+  - path: /home/ubuntu/f8s/python/f8s
+    include: "\\.py$"
+  - path: /home/ubuntu/f8s/docker/config
+    include: "flake8|prod.lock"
+    exclude: "cache|__pypackages__"
+  - path: /home/ubuntu/f8s/resources
+    include: ".*"
+    exclude: "__pycache__"
+rename_rules:
+  - regex: "/home/ubuntu/f8s"
+    replace: "/home/ubuntu/build/repo"
+  - regex: ".*/resources"
+    replace: "/home/ubuntu/build/resources"
+  - regex: "/python|/docker|/config"
+    replace: ""
+  - regex: "prod.lock"
+    replace: "pdm.lock"
+group_rules:
+  - name: test
+    regex: "(__init__|_test)\\.py$|flake8\\.ini$|resources|\\.lock$"
+  - name: prod
+    regex: "__init__\\.py$"
+line_rules:
+  - group: prod
+    exclude: test
