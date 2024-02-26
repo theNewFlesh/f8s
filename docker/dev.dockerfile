@@ -205,12 +205,12 @@ RUN echo "\n${CYAN}INSTALL PROD CLI${CLEAR}"; \
     chmod 755 /home/ubuntu/.local/bin/f8s
 
 # build jupyter lab
-RUN echo "\n${CYAN}BUILD JUPYTER LAB${CLEAR}"; \
-    . /home/ubuntu/scripts/x_tools.sh && \
-    export CONFIG_DIR=/home/ubuntu/config && \
-    export SCRIPT_DIR=/home/ubuntu/scripts && \
-    x_env_activate_dev && \
-    jupyter lab build
+# RUN echo "\n${CYAN}BUILD JUPYTER LAB${CLEAR}"; \
+#     . /home/ubuntu/scripts/x_tools.sh && \
+#     export CONFIG_DIR=/home/ubuntu/config && \
+#     export SCRIPT_DIR=/home/ubuntu/scripts && \
+#     x_env_activate_dev && \
+#     jupyter lab build
 
 USER root
 
