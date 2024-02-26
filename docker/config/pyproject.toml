@@ -28,11 +28,7 @@ dependencies = [
     "click>=8.1.3",
     "flasgger",
     "flask",
-    "flask-caching",
     "flask-healthz",
-    "jinja2",
-    "numpy",
-    "pandas",
 ]
 
 [project.urls]
