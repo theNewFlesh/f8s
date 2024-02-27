@@ -95,8 +95,9 @@ def config():
 class Demo(F8s):
     api = API
 
-    # def validate(self, config):
-    #     assert config['foo'] == 'bar'
+    def validate(self, config):
+        if 'foo' in config.keys():
+            assert config['foo'] == 'bar'
 
 
 def live_probe():
