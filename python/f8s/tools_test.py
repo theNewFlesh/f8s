@@ -24,7 +24,7 @@ class ToolsTests(unittest.TestCase):
             'foos': [['pizza'] * 3] * 3,
         }
         error = TypeError(arg, arg, 'arg2')
-        result = f8s.tolls.error_to_response(error)
+        result = f8s.tools.error_to_response(error)
 
         expected = r'''
 TypeError(
