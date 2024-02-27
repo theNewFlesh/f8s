@@ -556,7 +556,8 @@ x_session_server () {
     # Run application server
     x_env_activate_dev;
     echo "${CYAN2}APP${CLEAR}\n";
-    python3 $REPO_SUBPACKAGE/server/app.py;
+    kill `ps aux | grep test_app | head -n 1 | awk '{print $2}'`;
+    f8s serve $REPO_DIR/python/$REPO/test_app.py;
 }
 
 # TEST-FUNCTIONS----------------------------------------------------------------
