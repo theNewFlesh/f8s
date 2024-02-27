@@ -42,9 +42,9 @@ def get():
 @swg.swag_from(dict(
     parameters=[
         dict(
-            name='payload',
+            name='params',
             type='dict',
-            description='Test payload.',
+            description='Test params.',
             required=True,
         )
     ],
