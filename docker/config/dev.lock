@@ -5,7 +5,7 @@
 groups = ["default", "test"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:8461617d037616752848ec77aa2357108b2b3b0575e60af240d7c8fa60da9958"
+content_hash = "sha256:fa842800d237fc10d0d05ccc3b91c868f2fa7093d480bced7f2d06588168d6ad"
 
 [[package]]
 name = "attrs"
@@ -228,6 +228,20 @@ dependencies = [
 files = [
     {file = "flask_healthz-1.0.1-py3-none-any.whl", hash = "sha256:208e1f35d12d70bca623ac2dd9de17813c397f9f0a0c09aa746b4a543c75615d"},
     {file = "flask_healthz-1.0.1.tar.gz", hash = "sha256:3b25bfd8606950a77632925cfbbf19cac20650be51fc0efbe78c387e559e2541"},
+]
+
+[[package]]
+name = "gunicorn"
+version = "21.2.0"
+requires_python = ">=3.5"
+summary = "WSGI HTTP Server for UNIX"
+groups = ["default"]
+dependencies = [
+    "packaging",
+]
+files = [
+    {file = "gunicorn-21.2.0-py3-none-any.whl", hash = "sha256:3213aa5e8c24949e792bcacfc176fef362e7aac80b76c56f6b5122bf350722f0"},
+    {file = "gunicorn-21.2.0.tar.gz", hash = "sha256:88ec8bff1d634f98e61b9f65bc4bf3cd918a90806c6f5c48bc5603849ec81033"},
 ]
 
 [[package]]

@@ -30,6 +30,7 @@ dependencies = [
     "flask",
     "flask-healthz",
     "pyyaml>=6.0.1",
+    "gunicorn>=21.2.0",
 ]
 
 [project.urls]
