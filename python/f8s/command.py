@@ -39,7 +39,7 @@ def serve(module, app):
         MODULE - Module name of Flask app
         APP - Name of app variable
     '''
-    sys.argv = ['-c', '--bind', '0.0.0.0:8080', f'{module}:{app}']
+    sys.argv = ['gunicorn', '--bind', '0.0.0.0:8080', f'{module}:{app}']
     run()
 
 
