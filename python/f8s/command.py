@@ -18,7 +18,7 @@ def main():
 @main.command()
 def bash_completion():
     '''
-        BASH completion code to be written to a _f8s completion file.
+    BASH completion code to be written to a _f8s completion file.
     '''
     cmd = '_F8S_COMPLETE=bash_source f8s'
     result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
@@ -27,18 +27,26 @@ def bash_completion():
 
 
 @main.command()
-def serve():
+@click.argument('module', type=str, nargs=1)
+@click.argument('app', type=str, nargs=1, default='app')
+def serve(module, app):
+    # type: (str, str) -> None
     '''
-        Serve Flask application.
+    Serves given F8s application.
+
+    \b
+    Arguments:
+        MODULE - Module name of Flask app
+        APP - Name of app variable
     '''
-    sys.argv = ['-c', '--bind', '0.0.0.0:8080', 'test_app:app']
+    sys.argv = ['-c', '--bind', '0.0.0.0:8080', f'{module}:{app}']
     run()
 
 
 @main.command()
 def zsh_completion():
     '''
-        ZSH completion code to be written to a _f8s completion file.
+    ZSH completion code to be written to a _f8s completion file.
     '''
     cmd = '_F8S_COMPLETE=zsh_source f8s'
     result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
