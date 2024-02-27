@@ -84,7 +84,7 @@ def config():
     Returns:
         Response: Flask Response instance.
     '''
-    data = flask.current_app.extensions['demo'].config
+    data = flask.current_app.config['demo']
     return flask.Response(
         response=json.dumps(data),
         mimetype='application/json'
