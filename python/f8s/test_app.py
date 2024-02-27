@@ -61,9 +61,7 @@ def post():
     Returns:
         Response: Flask Response instance.
     '''
-    data = flask.request.json  # type: ignore
-    data = json.loads(data)  # type: ignore
-    data = dict(foo=data['foo'])
+    data = json.loads(flask.request.json)  # type: ignore
     return flask.Response(
         response=json.dumps(data),
         mimetype='application/json'
@@ -71,7 +69,7 @@ def post():
 
 
 # EXTENSION---------------------------------------------------------------------
-class DemoExtension(F8s):
+class Demo(F8s):
     api = API
 
     # def validate(self, config):
@@ -96,7 +94,7 @@ def ready_probe():
 
 # APP---------------------------------------------------------------------------
 def get_app():
-    return f8st.get_app([DemoExtension()], live_probe, ready_probe)
+    return f8st.get_app([Demo()], live_probe, ready_probe)
 
 
 app = get_app()

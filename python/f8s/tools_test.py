@@ -3,7 +3,7 @@ import unittest
 import flask
 
 import f8s.tools as f8st
-from f8s.test_app import DemoExtension
+from f8s.test_app import Demo
 # ------------------------------------------------------------------------------
 
 
@@ -64,7 +64,7 @@ TypeError(
 
     def test_get_app(self):
         result = f8st.get_app(
-            [DemoExtension()],
+            [Demo()],
             live_probe=live_probe,
             ready_probe=ready_probe,
             testing=True,
@@ -73,4 +73,4 @@ TypeError(
         self.assertTrue(result.config['TESTING'])
         self.assertIs(result.config['HEALTHZ']['live'], live_probe)
         self.assertIs(result.config['HEALTHZ']['ready'], ready_probe)
-        self.assertIsInstance(result.extensions['demoextension'], DemoExtension)
+        self.assertIsInstance(result.extensions['demo'], Demo)
