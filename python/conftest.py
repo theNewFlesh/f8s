@@ -34,13 +34,18 @@ def env(config_path):
     os.environ['F8S_CONFIG_PATH'] = config_path
     os.environ['F8S_SECRET_1'] = 'secret-1'
     os.environ['F8S_SECRET_2'] = 'secret-2'
-    os.environ['FOO_CONFIG_PATH'] = config_path
-    os.environ['FOO_SECRET_1'] = 'secret-1'
-    os.environ['FOO_SECRET_2'] = 'secret-2'
     yield
     del os.environ['F8S_CONFIG_PATH']
     del os.environ['F8S_SECRET_1']
     del os.environ['F8S_SECRET_2']
+
+
+@pytest.fixture()
+def foo_env(config_path):
+    os.environ['FOO_CONFIG_PATH'] = config_path
+    os.environ['FOO_SECRET_1'] = 'secret-1'
+    os.environ['FOO_SECRET_2'] = 'secret-2'
+    yield
     del os.environ['FOO_CONFIG_PATH']
     del os.environ['FOO_SECRET_1']
     del os.environ['FOO_SECRET_2']
