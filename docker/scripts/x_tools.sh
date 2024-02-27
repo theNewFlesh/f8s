@@ -555,8 +555,13 @@ x_session_python () {
 x_session_server () {
     # Run application server
     x_env_activate_dev;
-    echo "${CYAN2}APP${CLEAR}\n";
+    echo "${CYAN2}F8S DEMO APP${CLEAR}\n";
     kill `ps aux | grep test_app | head -n 1 | awk '{print $2}'`;
+    export DEMO_CONFIG_PATH=/tmp/demo-config.yaml;
+    export DEMO_SECRET_1=secret-1;
+    export DEMO_SECRET_2=secret-2;
+    rm -f $DEMO_CONFIG_PATH;
+    echo '{"foo": "bar"}' > $DEMO_CONFIG_PATH;
     f8s serve $REPO_DIR/python/$REPO/test_app.py;
 }
 
