@@ -1,80 +1,60 @@
-{{- with (include "overlay" . | fromYaml) -}}
+{{- with .Values -}}
 kind: Deployment
 apiVersion: apps/v1
-metadata:name: f8snamespace: {{ .namespace.name }}
+metadata:
+  name: f8s
+  namespace: {{ .namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .argocd_application.name }}
+      app: {{ .name }}
   template:
     metadata:
       labels:
-        app: {{ .argocd_application.name }}
+        app: {{ .name }}
     spec:
       containers:
-        - name: {{ .argocd_application.name }}-container
+        - name: {{ .name }}
           image: "{{ .deployment.repository }}:{{ .deployment.image_tag }}"
           imagePullPolicy: {{ .deployment.image_pull_policy }}
-          command:
-          {{- range $item := .deployment.command }}
-            - {{ $item }}
-          {{- end }}
-          args:
-          {{- range $item := .deployment.args }}
-            - {{ $item }}
-          {{- end }}
+          command: []
+          args: []
+          resources:
+            requests:
+              memory: {{ .deployment.memory }}
+              cpu: {{ .deployment.cpu }}
           envFrom:
-            {{- if .enable.env_configmap }}
-            - configMapRef:
-                name: {{ .argocd_application.name }}-env-configmap
-            {{- end }}
-            {{- if .enable.env_secret }}
+            {{- if .enable.secret }}
             - secretRef:
-                name: {{ .argocd_application.name }}-env-secret
+                name: {{ .name }}-secret
             {{- end }}
           ports:
             - containerPort: {{ .service.target_port }}
           {{- if .enable.liveness_probe }}
           livenessProbe:
             httpGet:
-              path: /healthz/live
+              path: /
               port: {{ .service.target_port }}
             initialDelaySeconds: 5
-            timeoutSeconds: 1
+            timeoutSeconds: 5
+            periodSeconds: 5
           {{- end }}
           {{- if .enable.readiness_probe }}
           readinessProbe:
             httpGet:
-              path: /healthz/ready
+              path: /
               port: {{ .service.target_port }}
             initialDelaySeconds: 5
-            timeoutSeconds: 1
+            timeoutSeconds: 5
+            failureThreshold: 5
+            periodSeconds: 5
           {{- end }}
           volumeMounts:
-            - name: storage
-              mountPath: {{ .deployment.storage_path }}
-            {{- if .enable.repo_volume }}
-            - name: repo
-              mountPath: {{ .deployment.repo_path }}
-            {{- end }}
+            - name: config
+              mountPath: /etc/f8s-config.yaml
       volumes:
-      {{- if .enable.nfs_volume }}
-        - name: storage
-          nfs:
-             path: {{ .deployment.storage_path }}
-             server: {{ .deployment.nfs_server }}
-             readOnly: false
-      {{- else if .enable.desktop_volume }}
-        - name: storage
-          persistentVolumeClaim:
-            claimName: {{ .argocd_application.name }}-storage-pvc
-      {{- end }}
-      {{- if .enable.repo_volume }}
-        - name: repo
-          persistentVolumeClaim:
-            claimName: {{ .argocd_application.name }}-repo-pvc
-      {{- end }}
-      imagePullSecrets:
-        - name: image-pull-secret
+        - name: config
+          configMap:
+            name: {{ .name }}-configmap
 {{- end -}}

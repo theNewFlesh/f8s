@@ -1,16 +1,16 @@
-{{- with (include "overlay" . | fromYaml) -}}
+{{- with .Values -}}
 {{ if .enable.traefik_ingress }}
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
-  name: {{ .argocd_application.name }}-traefik-ingress
-  namespace: {{ .namespace.name }}
+  name: {{ .name }}-ingress
+  namespace: {{ .namespace }}
 spec:
   routes:
     - match: {{ .traefik_ingress.match }}
       kind: Rule
       services:
-        - name: {{ .argocd_application.name }}-service
+        - name: {{ .name }}-service
           kind: Service
           port: 80
 {{ end }}

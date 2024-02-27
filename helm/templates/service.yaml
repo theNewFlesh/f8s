@@ -1,13 +1,13 @@
-{{- with (include "overlay" . | fromYaml) -}}
+{{- with .Values -}}
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ .argocd_application.name }}-service
-  namespace: {{ .namespace.name }}
+  name: {{ .name }}-service
+  namespace: {{ .namespace }}
 spec:
   type: ClusterIP
   selector:
-    app: {{ .argocd_application.name }}
+    app: {{ .name }}
   ports:
     - port: {{ .service.port }}
       targetPort: {{ .service.target_port }}
