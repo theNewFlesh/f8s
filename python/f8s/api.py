@@ -4,7 +4,7 @@ from json import JSONDecodeError
 
 import flask
 
-import f8s.tools
+import f8s.tools as f8st
 # ------------------------------------------------------------------------------
 
 
@@ -40,7 +40,7 @@ def handle_key_error(error):
     Returns:
         Response: KeyError response.
     '''
-    return f8s.tools.error_to_response(error)
+    return f8st.error_to_response(error)
 
 
 @API.errorhandler(TypeError)
@@ -55,7 +55,7 @@ def handle_type_error(error):
     Returns:
         Response: TypeError response.
     '''
-    return f8s.tools.error_to_response(error)
+    return f8st.error_to_response(error)
 
 
 @API.errorhandler(JSONDecodeError)
@@ -70,7 +70,7 @@ def handle_json_decode_error(error):
     Returns:
         Response: JSONDecodeError response.
     '''
-    return f8s.tools.error_to_response(error)
+    return f8st.error_to_response(error)
 # ------------------------------------------------------------------------------
 
 

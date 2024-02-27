@@ -1,13 +1,13 @@
 import unittest
 
-import f8s.tools
+import f8s.tools as f8st
 # ------------------------------------------------------------------------------
 
 
 class ToolsTests(unittest.TestCase):
     def test_error_to_response(self):
         error = TypeError('foo')
-        result = f8s.tools.error_to_response(error)
+        result = f8st.error_to_response(error)
         self.assertEqual(result.mimetype, 'application/json')
         self.assertEqual(result.json['error'], 'TypeError')
         self.assertEqual(result.json['args'], ['foo'])
@@ -24,7 +24,7 @@ class ToolsTests(unittest.TestCase):
             'foos': [['pizza'] * 3] * 3,
         }
         error = TypeError(arg, arg, 'arg2')
-        result = f8s.tools.error_to_response(error)
+        result = f8st.error_to_response(error)
 
         expected = r'''
 TypeError(

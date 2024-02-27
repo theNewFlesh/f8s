@@ -3,7 +3,7 @@ import os
 import flask
 import pytest
 
-import f8s
+import f8s.app as f8sa
 # ------------------------------------------------------------------------------
 
 
@@ -19,5 +19,5 @@ def test_readiness(app_setup, client):
 
 @pytest.mark.skipif('SKIP_SLOW_TESTS' in os.environ, reason='slow test')
 def test_get_app(app_setup):
-    result = f8s.app.get_app(testing=True)
+    result = f8sa.get_app(testing=True)
     assert isinstance(result, flask.Flask)
