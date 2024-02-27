@@ -59,7 +59,7 @@ class F8s:
         name = self.name.upper()
         app.config.from_prefixed_env(name)
         secrets = app.config
-        config_path = secrets.get(f'{name}_CONFIG_PATH', None)
+        config_path = secrets.get('CONFIG_PATH', None)
 
         # create config
         config = {}
@@ -68,7 +68,7 @@ class F8s:
                 config = yaml.safe_load(f)
 
         # update config with secrets
-        config.update(secrets)
+        config.update(dict(secrets))
         return config
 
     def validate(self, config):

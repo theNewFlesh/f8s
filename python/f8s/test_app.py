@@ -5,7 +5,7 @@ import flask
 import flasgger as swg
 from werkzeug.exceptions import BadRequest
 
-import f8s.app as f8s_app
+import f8s.app as f8sa
 from f8s.extension import F8s
 import f8s.tools as f8st
 # ------------------------------------------------------------------------------
@@ -98,5 +98,5 @@ def ready_probe():
 
 
 if __name__ == '__main__':
-    app = f8s_app.get_app([TestExtension()], live_probe, ready_probe)
+    app = f8sa.get_app([TestExtension()], live_probe, ready_probe)
     app.run(host='0.0.0.0', port=8080)

@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from f8s.api import API
@@ -7,91 +5,74 @@ from f8s.extension import F8s
 # ------------------------------------------------------------------------------
 
 
-def test_init(env, flask_app, config, make_dirs):
+def test_init(env, flask_app):
     result = F8s(app=None)
     assert hasattr(result, 'config') is False
 
     flask_app.config['TESTING'] = False
     result = F8s(app=flask_app)
     assert hasattr(result, 'config')
-    assert result.config == config
 
 
-def test_get_config_from_env(env, flask_app, config):
-    flask_app.config.from_prefixed_env('HIDEBOUND')
-    result = F8s()._get_config_from_env(flask_app)
-    for key, val in config.items():
-        assert result[key] == val
+def test_name():
+    result = F8s(app=None).name
+    assert result == 'f8s'
+
+    class Foo(F8s):
+        pass
+
+    result = Foo().name
+    assert result == 'foo'
 
 
-def test_get_config_from_yaml_file(env, flask_app, config, config_yaml_file):
-    result = F8s()._get_config_from_file(config_yaml_file)
-    for key, val in config.items():
-        assert result[key] == val
-
-
-def test_get_config_from_file_error(env, flask_app, config):
-    expected = 'Hidebound config files must end in one of these extensions:'
-    expected += r" \['json', 'yml', 'yaml'\]\. Given file: "
-    expected += r'/foo/bar/config\.pizza\.'
-    with pytest.raises(FileNotFoundError, match=expected):
-        F8s()._get_config_from_file('/foo/bar/config.pizza')
-
-
-def test_get_config_env_vars(env, flask_app, config):
-    flask_app.config.from_prefixed_env('HIDEBOUND')
-    result = F8s().get_config(flask_app)
-    for key, val in config.items():
-        assert result[key] == val
-
-
-def test_get_config_mising_env_var(env, flask_app, config):
-    os.environ.pop('HIDEBOUND_WORKFLOW')
-    flask_app.config.from_prefixed_env('HIDEBOUND')
-    result = F8s().get_config(flask_app)['workflow']
-    expected = ['delete', 'update', 'create', 'export']
-    assert result == expected
-
-
-def test_get_config_env_vars_empty_lists(env, flask_app, config):
-    os.environ['HIDEBOUND_WORKFLOW'] = '[]'
-    os.environ['HIDEBOUND_SPECIFICATION_FILES'] = '[]'
-    os.environ['HIDEBOUND_WEBHOOKS'] = '[]'
-    flask_app.config.from_prefixed_env('HIDEBOUND')
-
-    keys = ['workflow', 'specification_files', 'webhooks']
-    for key in keys:
-        result = F8s().get_config(flask_app)[key]
-        assert result == []
-
-
-def test_get_config_filepath(env, flask_app, config, config_yaml_file):
-    os.environ['HIDEBOUND_INGRESS_DIRECTORY'] = 'foobar'
-    flask_app.config.from_prefixed_env('HIDEBOUND')
-    result = F8s().get_config(flask_app)
-
-    assert result['ingress_directory'] != 'foobar'
-
-    for key, val in config.items():
-        assert result[key] == val
-
-
-def test_init_app(env, flask_app, config, make_dirs):
+def test_init_app(env, flask_app):
     flask_app.config['TESTING'] = False
-    hb = F8s()
-    hb.init_app(flask_app)
+    ext = F8s()
+    ext.init_app(flask_app)
 
-    assert flask_app.extensions['hidebound'] is hb
-    assert flask_app.blueprints['hidebound_api'] is API
-    assert hasattr(hb, 'config')
-    assert hb.config == config
+    assert flask_app.extensions['f8s'] is ext
+    assert flask_app.blueprints['f8s'] is ext.api
+    assert hasattr(ext, 'config')
+    assert isinstance(ext.config, dict)
 
 
-def test_init_app_testing(env, flask_app, config):
+def test_init_app_config_path(env, flask_app, config, config_path):
+    flask_app.config['TESTING'] = False
+    ext = F8s()
+    ext.init_app(flask_app)
+
+    for key, val in config.items():
+        assert ext.config[key] == val
+
+
+def test_init_app_testing(env, flask_app, config_path):
     flask_app.config['TESTING'] = True
-    hb = F8s()
-    hb.init_app(flask_app)
+    ext = F8s()
+    ext.init_app(flask_app)
 
-    assert flask_app.extensions['hidebound'] is hb
-    assert flask_app.blueprints['hidebound_api'] is API
-    assert hasattr(hb, 'config') is False
+    assert flask_app.extensions['f8s'] is ext
+    assert flask_app.blueprints['f8s'] is API
+    assert hasattr(ext, 'config') is False
+
+
+def test_validate(env, flask_app, config, config_path):
+    flask_app.config['TESTING'] = False
+
+    class Foo(F8s):
+        def validate(self, config):
+            assert config['foo'] != 'bar'
+
+    ext = Foo()
+    with pytest.raises(AssertionError):
+        ext.init_app(flask_app)
+
+
+def test_get_config(env, flask_app, config, config_path):
+    flask_app.config['TESTING'] = False
+
+    result = F8s(app=None).get_config(flask_app)
+    for key, val in config.items():
+        assert result[key] == val
+
+    assert result['SECRET_1'] == 'secret-1'
+    assert result['SECRET_2'] == 'secret-2'
