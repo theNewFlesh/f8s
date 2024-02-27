@@ -1,7 +1,18 @@
 import unittest
 
+import flask
+
 import f8s.tools as f8st
+from f8s.test_app import TestExtension
 # ------------------------------------------------------------------------------
+
+
+def live_probe():
+    return True
+
+
+def ready_probe():
+    return True
 
 
 class ToolsTests(unittest.TestCase):
@@ -50,3 +61,16 @@ TypeError(
         self.assertEqual(result.json['args'][2], 'arg2')
         self.assertEqual(result.json['message'], expected)
         self.assertEqual(result.json['code'], 500)
+
+    def test_get_app(self):
+        result = f8st.get_app(
+            [TestExtension()],
+            live_probe=live_probe,
+            ready_probe=ready_probe,
+            testing=True,
+        )
+        self.assertIsInstance(result, flask.Flask)
+        self.assertTrue(result.config['TESTING'])
+        self.assertIs(result.config['HEALTHZ']['live'], live_probe)
+        self.assertIs(result.config['HEALTHZ']['ready'], ready_probe)
+        self.assertIsInstance(result.extensions['testextension'], TestExtension)
