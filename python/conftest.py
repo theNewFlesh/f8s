@@ -29,6 +29,8 @@ def env_setup(config_path, prefix='F8S'):
     os.environ[f'{prefix}_CONFIG_PATH'] = config_path
     os.environ[f'{prefix}_SECRET_1'] = 'secret-1'
     os.environ[f'{prefix}_SECRET_2'] = 'secret-2'
+    keys = filter(lambda x: x.startswith(prefix), os.environ.keys())
+    return {k: os.environ[k] for k in keys}
 
 
 def env_teardown(prefix='F8S'):
@@ -39,15 +41,13 @@ def env_teardown(prefix='F8S'):
 
 @pytest.fixture()
 def env(config_path):
-    env_setup(config_path)
-    yield
+    yield env_setup(config_path)
     env_teardown()
 
 
 @pytest.fixture()
 def demo_env(config_path):
-    env_setup(config_path, 'DEMO')
-    yield
+    yield env_setup(config_path, 'DEMO')
     env_teardown('DEMO')
 
 

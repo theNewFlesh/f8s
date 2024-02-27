@@ -68,6 +68,29 @@ def post():
     )
 
 
+@API.route('/api/v1/config', methods=['GET'])
+@swg.swag_from(dict(
+    parameters=[],
+    responses={
+        200: dict(description='Config data', content='application/json'),
+        500: dict(description='Internal server error.')
+    }
+))
+def config():
+    # type: () -> flask.Response
+    '''
+    Get config data.
+
+    Returns:
+        Response: Flask Response instance.
+    '''
+    data = flask.current_app.extensions['demo'].config
+    return flask.Response(
+        response=json.dumps(data),
+        mimetype='application/json'
+    )
+
+
 # EXTENSION---------------------------------------------------------------------
 class Demo(F8s):
     api = API

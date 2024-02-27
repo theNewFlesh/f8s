@@ -1,6 +1,9 @@
 from typing import Any, Optional  # noqa F401
-import flask  # noqa F401
 
+import os
+import re
+
+import flask
 import yaml
 # ------------------------------------------------------------------------------
 
@@ -56,6 +59,7 @@ class F8s:
         app.register_blueprint(self.api)
         if not app.config['TESTING']:
             self.config = self.get_config(app)
+            app.config[self.name] = self.config
             self.validate(self.config)
 
     def get_config(self, app):
@@ -70,19 +74,22 @@ class F8s:
             dict: Database config.
         '''
         # get config variables from environment
-        name = self.name.upper()
-        app.config.from_prefixed_env(name)
-        secrets = app.config
-        config_path = secrets.get('CONFIG_PATH', None)
+        prefix = self.name.upper() + '_'
+        env = {}
+        for key, val in os.environ.items():
+            if key.startswith(prefix):
+                k = re.sub(f'^{prefix}', '', key).lower()
+                env[k] = val
 
         # create config
+        config_path = env.get('config_path', None)
         config = {}
         if config_path is not None:
             with open(config_path) as f:
                 config = yaml.safe_load(f)
 
-        # update config with secrets
-        config.update(dict(secrets))
+        # update config with env vars
+        config.update(env)
         return config
 
     def validate(self, config):

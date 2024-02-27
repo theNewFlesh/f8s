@@ -33,6 +33,8 @@ def test_init_app(env, flask_app):
 
     assert flask_app.extensions['f8s'] is ext
     assert flask_app.blueprints['f8s'] is ext.api
+    assert flask_app.config['f8s']['foo'] == 'bar'
+    assert flask_app.config['f8s']['secret_1'] == 'secret-1'
     assert hasattr(ext, 'config')
     assert isinstance(ext.config, dict)
 
@@ -75,21 +77,28 @@ def test_get_config(env, flask_app, config, config_path):
     for key, val in config.items():
         assert result[key] == val
 
-    assert result['SECRET_1'] == 'secret-1'
-    assert result['SECRET_2'] == 'secret-2'
+    assert result['secret_1'] == 'secret-1'
+    assert result['secret_2'] == 'secret-2'
 
 
-def test_get(env, test_app, client, config_path):
+def test_get(demo_env, test_app, client, config_path):
     result = client.get('/api/v1/get')
     assert result.status_code == 200
     result = json.loads(result.data.decode('utf-8'))['message']
     assert result == 'Success'
 
 
-def test_post(env, test_app, client, config_path):
+def test_post(demo_env, test_app, client, config_path):
     expected = json.dumps(dict(foo='bar'))
     result = client.post('/api/v1/post', json=expected)
     assert result.status_code == 200
     assert result.text == expected
     result = json.loads(result.data.decode('utf-8'))
     assert result == json.loads(expected)
+
+
+def test_config(demo_env, test_app, client, config_path):
+    result = client.get('/api/v1/config')
+    assert result.status_code == 200
+    result = json.loads(result.data.decode('utf-8'))
+    assert result['foo'] == 'bar'
