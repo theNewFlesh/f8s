@@ -29,6 +29,7 @@ dependencies = [
     "flasgger",
     "flask",
     "flask-healthz",
+    "pyyaml>=6.0.1",
 ]
 
 [project.urls]
@@ -37,8 +38,6 @@ documentation = "https://theNewFlesh.github.io/f8s"
 
 [project.scripts]
 f8s = "f8s.command:main"
-
-[project.optional-dependencies]
 
 [tool.pdm.dev-dependencies]
 lab = [
@@ -63,6 +62,7 @@ test = [
     "pytest-forked",
     "pytest-xdist",
     "pytest",
+    "types-PyYAML>=6.0.12.12",
 ]
 
 [tool.pytest.ini_options]
