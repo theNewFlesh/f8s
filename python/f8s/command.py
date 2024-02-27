@@ -1,8 +1,7 @@
+from pathlib import Path
 import subprocess
-import sys
 
 import click
-from gunicorn.app.wsgiapp import run
 # ------------------------------------------------------------------------------
 
 '''
@@ -27,20 +26,22 @@ def bash_completion():
 
 
 @main.command()
-@click.argument('module', type=str, nargs=1)
+@click.argument('filepath', type=str, nargs=1)
 @click.argument('app', type=str, nargs=1, default='app')
-def serve(module, app):
+def serve(filepath, app):
     # type: (str, str) -> None
     '''
     Serves given F8s application.
 
     \b
     Arguments:
-        MODULE - Module name of Flask app
-        APP - Name of app variable
+        FILEPATH - Filepath of F8s python module
+        APP - Name of app variable in module
     '''
-    sys.argv = ['gunicorn', '--bind', '0.0.0.0:8080', f'{module}:{app}']
-    run()
+    fp = Path(filepath)
+    cmd = f'cd {fp.parent} && gunicorn --bind 0.0.0.0:8080 {fp.stem}:{app}'
+    proc = subprocess.Popen(cmd, shell=True)
+    proc.wait()
 
 
 @main.command()
