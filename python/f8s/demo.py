@@ -45,10 +45,11 @@ class Demo(F8s):
     #     assert config['foo'] == 'bar'
 
 
-
 def live_probe():
     # type: () -> None
-    '''Liveness probe for kubernetes.'''
+    '''
+    Liveness probe for kubernetes.
+    '''
     pass
 
 
