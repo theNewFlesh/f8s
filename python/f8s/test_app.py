@@ -70,7 +70,7 @@ def post():
 
 
 # EXTENSION---------------------------------------------------------------------
-class TestExtension(F8s):
+class DemoExtension(F8s):
     api = API
 
     # def validate(self, config):
@@ -95,7 +95,7 @@ def ready_probe():
 
 # APP---------------------------------------------------------------------------
 def get_app():
-    return f8st.get_app([TestExtension()], live_probe, ready_probe)
+    return f8st.get_app([DemoExtension()], live_probe, ready_probe)
 
 
 if __name__ == '__main__':
