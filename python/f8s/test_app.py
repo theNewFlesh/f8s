@@ -98,5 +98,8 @@ def get_app():
     return f8st.get_app([DemoExtension()], live_probe, ready_probe)
 
 
+app = get_app()
+
+
 if __name__ == '__main__':
-    get_app().run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080)
