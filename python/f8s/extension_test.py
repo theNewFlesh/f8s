@@ -56,14 +56,14 @@ def test_init_app_testing(env, flask_app, config_path):
     assert hasattr(ext, 'config') is False
 
 
-def test_validate(foo_env, flask_app, config, config_path):
+def test_validate(demo_env, flask_app, config, config_path):
     flask_app.config['TESTING'] = False
 
-    class Foo(F8s):
+    class Demo(F8s):
         def validate(self, config):
             assert config['foo'] != 'bar'
 
-    ext = Foo()
+    ext = Demo()
     with pytest.raises(AssertionError):
         ext.init_app(flask_app)
 

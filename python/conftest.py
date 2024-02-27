@@ -25,26 +25,30 @@ def config_path(config):
     temp.cleanup()
 
 
+def env_setup(config_path, prefix='F8S'):
+    os.environ[f'{prefix}_CONFIG_PATH'] = config_path
+    os.environ[f'{prefix}_SECRET_1'] = 'secret-1'
+    os.environ[f'{prefix}_SECRET_2'] = 'secret-2'
+
+
+def env_teardown(prefix='F8S'):
+    del os.environ[f'{prefix}_CONFIG_PATH']
+    del os.environ[f'{prefix}_SECRET_1']
+    del os.environ[f'{prefix}_SECRET_2']
+
+
 @pytest.fixture()
 def env(config_path):
-    os.environ['F8S_CONFIG_PATH'] = config_path
-    os.environ['F8S_SECRET_1'] = 'secret-1'
-    os.environ['F8S_SECRET_2'] = 'secret-2'
+    env_setup(config_path)
     yield
-    del os.environ['F8S_CONFIG_PATH']
-    del os.environ['F8S_SECRET_1']
-    del os.environ['F8S_SECRET_2']
+    env_teardown()
 
 
 @pytest.fixture()
-def foo_env(config_path):
-    os.environ['FOO_CONFIG_PATH'] = config_path
-    os.environ['FOO_SECRET_1'] = 'secret-1'
-    os.environ['FOO_SECRET_2'] = 'secret-2'
+def demo_env(config_path):
+    env_setup(config_path, 'DEMO')
     yield
-    del os.environ['FOO_CONFIG_PATH']
-    del os.environ['FOO_SECRET_1']
-    del os.environ['FOO_SECRET_2']
+    env_teardown('DEMO')
 
 
 @pytest.fixture()
