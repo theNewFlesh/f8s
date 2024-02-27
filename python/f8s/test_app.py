@@ -4,7 +4,7 @@ import flask
 import flasgger as swg
 
 from f8s.extension import F8s
-import f8s.app as f8sa
+import f8s.tools as f8st
 
 
 # API---------------------------------------------------------------------------
@@ -95,7 +95,7 @@ def ready_probe():
 
 # APP---------------------------------------------------------------------------
 def get_app():
-    return f8sa.get_app([TestExtension()], live_probe, ready_probe)
+    return f8st.get_app([TestExtension()], live_probe, ready_probe)
 
 
 if __name__ == '__main__':

@@ -1,9 +1,23 @@
-from typing import Optional  # noqa F401
+from typing import Any, Optional  # noqa F401
 import flask  # noqa F401
 
 import yaml
+# ------------------------------------------------------------------------------
 
-from f8s.api import API
+
+API = flask.Blueprint('f8s', __name__, url_prefix='')
+
+
+@API.route('/apidocs')
+def apidocs():
+    # type: () -> Any
+    '''
+    Route to F8s API documentation.
+
+    Returns:
+        html: Flassger generated API page.
+    '''
+    return flask.redirect(flask.url_for('flasgger.apidocs'))
 # ------------------------------------------------------------------------------
 
 

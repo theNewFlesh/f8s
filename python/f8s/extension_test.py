@@ -1,7 +1,6 @@
 import pytest
 
-from f8s.api import API
-from f8s.extension import F8s
+from f8s.extension import API, F8s
 # ------------------------------------------------------------------------------
 
 
