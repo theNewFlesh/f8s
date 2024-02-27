@@ -8,6 +8,7 @@ import pytest
 import yaml
 
 import f8s
+import f8s.test_app as f8sta
 # ------------------------------------------------------------------------------
 
 
@@ -61,6 +62,22 @@ def flask_app():
     context.pop()
 
 
+@pytest.fixture()
+def test_app():
+    app = f8sta.get_app()
+    context = app.app_context()
+    context.push()
+    app = context.app
+    app.config['TESTING'] = True
+    yield app
+    context.pop()
+
+
+@pytest.fixture()
+def client(test_app):
+    yield test_app.test_client()
+
+
 # @pytest.fixture()
 # def app():
 #     yield f8s.app.get_app(extensions=[], testing=True)
@@ -70,10 +87,6 @@ def flask_app():
 # def client(app):
 #     yield app.server.test_client()
 
-
-# @pytest.fixture()
-# def flask_client(flask_app):
-#     yield flask_app.test_client()
 
 
 # @pytest.fixture()

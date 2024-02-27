@@ -1,16 +1,13 @@
 import json
-from json import JSONDecodeError
 
 import flask
 import flasgger as swg
-from werkzeug.exceptions import BadRequest
 
-import f8s.app as f8sa
 from f8s.extension import F8s
-import f8s.tools as f8st
-# ------------------------------------------------------------------------------
+import f8s.app as f8sa
 
 
+# API---------------------------------------------------------------------------
 API = flask.Blueprint('test', __name__, url_prefix='')
 
 
@@ -64,16 +61,15 @@ def post():
     Returns:
         Response: Flask Response instance.
     '''
-    try:
-        data = json.loads(flask.request.get_json())
-    except (BadRequest, JSONDecodeError, TypeError) as e:
-        return f8st.error_to_response(e)
+    data = json.loads(flask.request.get_json())
+    data = dict(foo=data['foo'])
     return flask.Response(
-        response=json.dumps(dict(data=data)),
+        response=json.dumps(data),
         mimetype='application/json'
     )
 
 
+# EXTENSION---------------------------------------------------------------------
 class TestExtension(F8s):
     api = API
 
@@ -82,21 +78,25 @@ class TestExtension(F8s):
 
 
 def live_probe():
-    # type: () -> None
+    # type: () -> dict
     '''
     Liveness probe for kubernetes.
     '''
-    pass
+    return dict(status='live')
 
 
 def ready_probe():
-    # type: () -> None
+    # type: () -> dict
     '''
     Readiness probe for kubernetes.
     '''
-    pass
+    return dict(status='ready')
+
+
+# APP---------------------------------------------------------------------------
+def get_app():
+    return f8sa.get_app([TestExtension()], live_probe, ready_probe)
 
 
 if __name__ == '__main__':
-    app = f8sa.get_app([TestExtension()], live_probe, ready_probe)
-    app.run(host='0.0.0.0', port=8080)
+    get_app().run(host='0.0.0.0', port=8080)
