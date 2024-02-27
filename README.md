@@ -39,7 +39,7 @@ Framework for building K8s-ready Flask applications.
 
 See [documentation](https://the-new-flesh.github.io/f8s/) for details.
 
-# InstallationFramework for building K8s-ready Flask applications.
+# Installation
 ### Python
 `pip install f8s`
 
