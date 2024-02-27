@@ -64,7 +64,7 @@ Run `bin/f8s --help` for more help on the command line tool.
 1. `bin/f8s` must be run from this repository's top level directory.
 2. Therefore, if using zsh, it is recommended that you paste the following line
     in your ~/.zshrc file:
-    - ```alias f8s=`cd [parent dir]/f8s; bin/f8s` ```
+    - `alias f8s="cd [parent dir]/f8s; bin/f8s"`
     - Replace `[parent dir]` with the parent directory of this repository
 3. Running the `zsh-complete` command will enable tab completions of the cli
    commands, in the next shell session.
