@@ -33,7 +33,7 @@ def get():
         Response: Flask Response instance.
     '''
     return flask.Response(
-        response=json.dumps(dict(message='Test get endpoint called.')),
+        response=json.dumps(dict(message='Success')),
         mimetype='application/json'
     )
 
@@ -49,8 +49,8 @@ def get():
         )
     ],
     responses={
-        200: dict(description='Sucess message.', content='application/json'),
-        400: dict(description='Internal server error.')
+        200: dict(description='JSON data', content='application/json'),
+        500: dict(description='Internal server error.')
     }
 ))
 def post():
@@ -61,7 +61,8 @@ def post():
     Returns:
         Response: Flask Response instance.
     '''
-    data = json.loads(flask.request.get_json())
+    data = flask.request.json  # type: ignore
+    data = json.loads(data)  # type: ignore
     data = dict(foo=data['foo'])
     return flask.Response(
         response=json.dumps(data),

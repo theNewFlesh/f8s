@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from f8s.extension import API, F8s
@@ -75,3 +77,19 @@ def test_get_config(env, flask_app, config, config_path):
 
     assert result['SECRET_1'] == 'secret-1'
     assert result['SECRET_2'] == 'secret-2'
+
+
+def test_get(env, test_app, client, config_path):
+    result = client.get('/api/v1/get')
+    assert result.status_code == 200
+    result = json.loads(result.data.decode('utf-8'))['message']
+    assert result == 'Success'
+
+
+def test_post(env, test_app, client, config_path):
+    expected = json.dumps(dict(foo='bar'))
+    result = client.post('/api/v1/post', json=expected)
+    assert result.status_code == 200
+    assert result.text == expected
+    result = json.loads(result.data.decode('utf-8'))
+    assert result == json.loads(expected)
