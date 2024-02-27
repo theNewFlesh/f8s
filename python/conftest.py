@@ -1,6 +1,5 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import json
 import os
 import time
 
@@ -8,8 +7,7 @@ import flask
 import pytest
 import yaml
 
-import f8s.app as application
-import f8s.extension as ext
+import f8s
 # ------------------------------------------------------------------------------
 
 
@@ -17,37 +15,23 @@ DELAY = 1
 
 
 @pytest.fixture()
+def config():
+    return {}
+
+
+@pytest.fixture()
 def env(config):
-    yaml_keys = [
-        'specification_files',
-        'exporters',
-        'webhooks',
-    ]
-    for key, val in config.items():
-        if key in yaml_keys:
-            os.environ[f'HIDEBOUND_{key.upper()}'] = yaml.safe_dump(val)
-        elif key == 'dask':
-            for k, v in val.items():
-                os.environ[f'HIDEBOUND_DASK_{k.upper()}'] = str(v)
-        else:
-            os.environ[f'HIDEBOUND_{key.upper()}'] = str(val)
-
-    keys = filter(lambda x: x.startswith('HIDEBOUND_'), os.environ.keys())
-    env = {k: os.environ[k] for k in keys}
-    yield env
-
-    keys = filter(lambda x: x.startswith('HIDEBOUND_'), os.environ.keys())
-    for key in keys:
-        os.environ.pop(key)
+    os.environ['F8S_SECRET_1'] = 'secret-1'
+    os.environ['F8S_SECRET_2'] = 'secret-2'
 
 
 @pytest.fixture()
 def app():
-    yield application.APP
+    yield f8s.app.get_app(extensions=[], testing=True)
 
 
 @pytest.fixture()
-def app_client(app):
+def client(app):
     yield app.server.test_client()
 
 
@@ -69,10 +53,9 @@ def flask_client(flask_app):
 @pytest.fixture()
 def extension(flask_app):
     flask_app.config['TESTING'] = False
-    ext.swagger.init_app(flask_app)
-    ext.hidebound.init_app(flask_app)
-    ext.hidebound.database._testing = True
-    yield ext.hidebound
+    f8s.extension.swagger.init_app(flask_app)
+    f8s.extension.f8s.init_app(flask_app)
+    yield f8s.extension.f8s
 
 
 @pytest.fixture()
@@ -84,35 +67,22 @@ def temp_dir():
 
 @pytest.fixture()
 def config_yaml_file(temp_dir, config):
-    filepath = Path(temp_dir, 'hidebound_config.yaml').as_posix()
+    filepath = Path(temp_dir, 'config.yaml').as_posix()
     with open(filepath, 'w') as f:
         yaml.safe_dump(config, f)
 
-    os.environ['HIDEBOUND_CONFIG_FILEPATH'] = filepath
-    return filepath
-
-
-@pytest.fixture()
-def config_json_file(temp_dir, config):
-    filepath = Path(temp_dir, 'hidebound_config.json').as_posix()
-    with open(filepath, 'w') as f:
-        json.dump(config, f)
-
-    os.environ['HIDEBOUND_CONFIG_FILEPATH'] = filepath
+    os.environ['F8S_CONFIG_PATH'] = filepath
     return filepath
 
 
 @pytest.fixture()
 def api_setup(env, extension):
-    return dict(
-        env=env,
-        extension=extension,
-    )
+    return dict(env=env, extension=extension)
 
 
 @pytest.fixture()
-def api_update(flask_client):
-    response = flask_client.post('/api/update')
+def api_demo(flask_client):
+    response = flask_client.post('/api/demo')
     time.sleep(DELAY)
     yield response
 

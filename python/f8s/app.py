@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable, Optional  # noqa F401
 
 import flasgger
 import flask
@@ -9,6 +9,10 @@ import flask_healthz
 '''
 A Flask REST application for Kuberenetes.
 '''
+
+
+swagger = flasgger.Swagger()
+healthz = flask_healthz.Healthz()
 
 
 def get_app(extensions, live_probe=None, ready_probe=None, testing=False):
@@ -30,8 +34,8 @@ def get_app(extensions, live_probe=None, ready_probe=None, testing=False):
     app.config['TESTING'] = testing
     app.config['HEALTHZ'] = dict(live=live_probe, ready=ready_probe)
 
-    flasgger.Swagger().init_app(app)
-    flask_healthz.Healthz().init_app(app)
+    swagger.init_app(app)
+    healthz.init_app(app)
     for ext in extensions:
         ext.init_app(app)
 

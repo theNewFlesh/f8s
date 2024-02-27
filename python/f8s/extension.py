@@ -7,7 +7,6 @@ from f8s.api import API
 # ------------------------------------------------------------------------------
 
 
-# inheriting from Singleton breaks init and init_app tests
 class F8s:
     api = API
 
@@ -22,6 +21,15 @@ class F8s:
         if app is not None:
             self.init_app(app)
 
+    @property
+    def name(self):
+        # type: () -> str
+        '''
+        Returns:
+            str: Name of class.
+        '''
+        return self.__class__.__name__.lower()
+
     def init_app(self, app):
         # type: (flask.Flask) -> None
         '''
@@ -30,7 +38,7 @@ class F8s:
         Args:
             app (Flask): Flask app.
         '''
-        app.extensions['f8s'] = self
+        app.extensions[self.name] = self
         app.register_blueprint(self.api)
         if not app.config['TESTING']:
             self.config = self.get_config(app)
@@ -48,9 +56,10 @@ class F8s:
             dict: Database config.
         '''
         # get config variables from environment
-        app.config.from_prefixed_env('F8S')
+        name = self.name.upper()
+        app.config.from_prefixed_env(name)
         secrets = app.config
-        config_path = secrets.get('F8S_CONFIG_PATH', None)
+        config_path = secrets.get(f'{name}_CONFIG_PATH', None)
 
         # create config
         config = {}

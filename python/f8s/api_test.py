@@ -1,10 +1,6 @@
-from pathlib import Path
 import json
-import os
-import re
 import time
 
-import numpy as np
 import pytest
 # ------------------------------------------------------------------------------
 
@@ -34,21 +30,21 @@ def try_post_json(
 
 
 @pytest.mark.flaky(reruns=RERUNS)
-def test_demo(api_setup, flask_client, make_files, api_update):
+def test_endpoint(api_setup, flask_client, make_files, api_update):
     extension = api_setup['extension']
 
-    # call demo
+    # call test
     result = try_post_json(
-        flask_client, '/api/demo', json={}, status=200
+        flask_client, '/api/test', json={}, status=200
     )['response']
-    expected = extension.database.demo()\
-        .replace({np.nan: None})\
+    expected = extension.database.test() \
+        .replace({np.nan: None}) \
         .to_dict(orient='records')
     assert result == expected
 
     # test general exceptions
     extension.database = 'foo'
-    result = try_post_json(flask_client, '/api/demo', json={})['error']
+    result = try_post_json(flask_client, '/api/test', json={})['error']
     assert result == 'AttributeError'
 
 
