@@ -43,3 +43,8 @@ ENV REPO='f8s'
 ENV PYTHONPATH "${PYTHONPATH}:/home/ubuntu/$REPO/python"
 RUN echo "\n${CYAN}INSTALL F8S{CLEAR}"; \
     pip3.10 install --user --upgrade f8s
+
+ENV PATH=$PATH:/home/ubuntu/.local/bin
+EXPOSE 8080
+
+COPY scripts/test_app.py /home/ubuntu/test_app.py
