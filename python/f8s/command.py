@@ -31,7 +31,7 @@ def bash_completion():
 def serve(filepath, app):
     # type: (str, str) -> None
     '''
-    Serves given F8s application.
+    Serves given F8s application via gunicorn.
 
     \b
     Arguments:
