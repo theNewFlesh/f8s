@@ -106,7 +106,7 @@ secret: |                 # create additional env vars
 deployment:
   config_directory: /etc/f8s  # the directory for all the extension config files
   repository: thenewflesh/f8s
-  image_tag: latest
+  image_tag: prod-latest
 ```
 
 ### Example Python app.py
