@@ -61,6 +61,7 @@
 <li class="toctree-l1"><a class="reference internal" href="#app-development">App Development</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#example-helm-values-yaml">Example Helm values.yaml</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#example-python-app-py">Example Python app.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#absolute-minimum-python-boilerplate">Absolute minimum python boilerplate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#serve-f8s-app">Serve F8s App</a></li>
 </ul>
 </li>
@@ -329,6 +330,26 @@ accesible via <code class="docutils literal notranslate"><span class="pre">flask
 
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">get_app</span><span class="p">()</span>  <span class="c1"># app variable needs to exist for gunicorn to call</span>
+</pre></div>
+</div>
+</section>
+<section id="absolute-minimum-python-boilerplate">
+<h2>Absolute minimum python boilerplate<a class="headerlink" href="#absolute-minimum-python-boilerplate" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">flask</span>
+
+<span class="kn">from</span> <span class="nn">f8s.extension</span> <span class="kn">import</span> <span class="n">F8s</span>
+<span class="kn">import</span> <span class="nn">f8s.tools</span> <span class="k">as</span> <span class="nn">f8s_tools</span>
+
+<span class="n">API</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="nd">@API</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/v1/hello&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s1">&#39;hello&#39;</span>
+
+<span class="k">class</span> <span class="nc">Hello</span><span class="p">(</span><span class="n">F8s</span><span class="p">):</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="n">API</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">f8s_tools</span><span class="o">.</span><span class="n">get_app</span><span class="p">([</span><span class="n">Hello</span><span class="p">()])</span>
 </pre></div>
 </div>
 </section>
