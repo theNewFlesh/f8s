@@ -84,7 +84,7 @@ internal Flask configuration per extension. Relevant yaml files and environment
 variables mapped into the container are aggregated by each extension and
 accesible via `flask.current_app.config[extension_name]` in python.
 
-## Example Helm values.yaml:
+### Example Helm values.yaml
 
 ```yaml
 extensions:
@@ -109,7 +109,7 @@ deployment:
   image_tag: latest
 ```
 
-## Example Python app.py:
+### Example Python app.py
 
 ```python
 import json
@@ -207,8 +207,9 @@ def get_app():
 app = get_app()  # app variable needs to exist for gunicorn to call
 ```
 
-## Serve F8s App
-```bash
+### Serve F8s App
+
+```shell
 f8s serve /path/to/app.py
 ```
 
