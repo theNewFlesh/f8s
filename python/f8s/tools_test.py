@@ -2,7 +2,7 @@ import unittest
 
 import flask
 
-import f8s.tools as f8st
+import f8s.tools as f8t
 from f8s.test_app import Demo
 # ------------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ def ready_probe():
 class ToolsTests(unittest.TestCase):
     def test_error_to_response(self):
         error = TypeError('foo')
-        result = f8st.error_to_response(error)
+        result = f8t.error_to_response(error)
         self.assertEqual(result.mimetype, 'application/json')
         self.assertEqual(result.json['error'], 'TypeError')
         self.assertEqual(result.json['args'], ['foo'])
@@ -35,7 +35,7 @@ class ToolsTests(unittest.TestCase):
             'foos': [['pizza'] * 3] * 3,
         }
         error = TypeError(arg, arg, 'arg2')
-        result = f8st.error_to_response(error)
+        result = f8t.error_to_response(error)
 
         expected = r'''
 TypeError(
@@ -63,7 +63,7 @@ TypeError(
         self.assertEqual(result.json['code'], 500)
 
     def test_get_app(self):
-        result = f8st.get_app(
+        result = f8t.get_app(
             [Demo()],
             live_probe=live_probe,
             ready_probe=ready_probe,

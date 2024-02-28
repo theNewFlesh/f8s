@@ -6,7 +6,7 @@ import flask
 import pytest
 import yaml
 
-import f8s.test_app as f8sta
+import f8s.test_app as f8a
 # ------------------------------------------------------------------------------
 
 
@@ -63,7 +63,7 @@ def flask_app():
 
 @pytest.fixture()
 def test_app():
-    app = f8sta.get_app()
+    app = f8a.get_app()
     context = app.app_context()
     context.push()
     app = context.app

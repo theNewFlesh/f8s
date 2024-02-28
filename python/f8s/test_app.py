@@ -4,7 +4,7 @@ import flask
 import flasgger as swg
 
 from f8s.extension import F8s
-import f8s.tools as f8st
+import f8s.tools as f8t
 
 
 # API---------------------------------------------------------------------------
@@ -118,7 +118,7 @@ def ready_probe():
 
 # APP---------------------------------------------------------------------------
 def get_app():
-    return f8st.get_app([Demo()], live_probe, ready_probe)
+    return f8t.get_app([Demo()], live_probe, ready_probe)
 
 
 app = get_app()
