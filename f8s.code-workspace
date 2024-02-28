@@ -96,7 +96,6 @@
                     "'${input:pypi_user}'",
                     "'${input:pypi_password}'",
                     "'${input:pypi_comment}'",
-                    "'${input:pypi_url}'"
                 ],
                 "dependsOn": [
                     "[test] prod"
@@ -488,12 +487,6 @@
                 "id": "pypi_comment",
                 "description": "Comments:",
                 "type": "promptString"
-            },
-            {
-                "id": "pypi_url",
-                "description": "PyPI registry URL:",
-                "type": "promptString",
-                "default": "https://pypi.org"
             },
             {
                 "id": "commit_message",
