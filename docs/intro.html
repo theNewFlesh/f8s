@@ -126,7 +126,7 @@
              alt="github" width="30px" height="30px"
         >
     </a>
-    <a href="https://pypi.org/user/the-new-flesh" rel="nofollow noreferrer">
+    <a href="https://pypi.org/user/theNewFlesh" rel="nofollow noreferrer">
         <img src="https://cdn.iconscout.com/icon/free/png-256/python-2-226051.png"
              alt="pypi" width="30px" height="30px"
         >
@@ -141,14 +141,14 @@
              alt="alexgbraun" width="30px" height="30px"
         >
     </a>
-</p><!-- <img id="logo" src="resources/logo.png" style="max-width: 717px"> --><a class="reference external image-reference" href="https://github.com/the-new-flesh/f8s/blob/master/LICENSE"><img alt="" src="https://img.shields.io/badge/License-MIT-F77E70?style=for-the-badge" /></a>
-<a class="reference external image-reference" href="https://github.com/the-new-flesh/f8s/blob/master/docker/config/pyproject.toml"><img alt="" src="https://img.shields.io/pypi/pyversions/f8s?style=for-the-badge&amp;label=Python&amp;color=A0D17B&amp;logo=python&amp;logoColor=A0D17B" /></a>
+</p><!-- <img id="logo" src="resources/logo.png" style="max-width: 717px"> --><a class="reference external image-reference" href="https://github.com/theNewFlesh/f8s/blob/master/LICENSE"><img alt="" src="https://img.shields.io/badge/License-MIT-F77E70?style=for-the-badge" /></a>
+<a class="reference external image-reference" href="https://github.com/theNewFlesh/f8s/blob/master/docker/config/pyproject.toml"><img alt="" src="https://img.shields.io/pypi/pyversions/f8s?style=for-the-badge&amp;label=Python&amp;color=A0D17B&amp;logo=python&amp;logoColor=A0D17B" /></a>
 <a class="reference external image-reference" href="https://pypi.org/project/f8s/"><img alt="" src="https://img.shields.io/pypi/v/f8s?style=for-the-badge&amp;label=PyPI&amp;color=5F95DE&amp;logo=pypi&amp;logoColor=5F95DE" /></a>
 <a class="reference external image-reference" href="https://pepy.tech/project/f8s"><img alt="" src="https://img.shields.io/pypi/dm/f8s?style=for-the-badge&amp;label=Downloads&amp;color=5F95DE" /></a>
 <section id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
 <p>Framework for building K8s-ready Flask applications.</p>
-<p>See <a class="reference external" href="https://thenewflesh.github.io/f8s/">documentation</a> for details.</p>
+<p>See <a class="reference external" href="https://theNewFlesh.github.io/f8s/">documentation</a> for details.</p>
 </section>
 <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
@@ -212,12 +212,12 @@ accesible via <code class="docutils literal notranslate"><span class="pre">flask
 <section id="example-helm-values-yaml">
 <h2>Example Helm values.yaml<a class="headerlink" href="#example-helm-values-yaml" title="Link to this heading">¶</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">extensions</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">rest</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w">                 </span><span class="c1"># creates `REST_CONFIG_PATH=/etc/rest-config.yaml` env var</span>
-<span class="w">    </span><span class="no">allowed-actions:      # `/etc/rest-config.yaml` content</span>
+<span class="w">  </span><span class="nt">rest</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w">                 </span><span class="c1"># creates `REST_CONFIG_PATH=~/f8s/rest-config.yaml` env var</span>
+<span class="w">    </span><span class="no">allowed-actions:      # `~/f8s/rest-config.yaml` content</span>
 <span class="w">      </span><span class="no">- get</span>
 <span class="w">      </span><span class="no">- post</span>
-<span class="w">  </span><span class="nt">db</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w">                   </span><span class="c1"># creates `DB_CONFIG_PATH=/etc/db-config.yaml` env var</span>
-<span class="w">    </span><span class="no">user: admin           # `/etc/db-config.yaml` content</span>
+<span class="w">  </span><span class="nt">db</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w">                   </span><span class="c1"># creates `DB_CONFIG_PATH=~/f8s/db-config.yaml` env var</span>
+<span class="w">    </span><span class="no">user: admin           # `~/f8s/db-config.yaml` content</span>
 <span class="w">    </span><span class="no">tables:</span>
 <span class="w">      </span><span class="no">- users</span>
 <span class="w">      </span><span class="no">- groups</span>
@@ -228,9 +228,9 @@ accesible via <code class="docutils literal notranslate"><span class="pre">flask
 <span class="w">  </span><span class="no">DB_TOKEN: token</span>
 
 <span class="nt">deployment</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">config_directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc</span><span class="w">  </span><span class="c1"># the directory for all the extension config files</span>
+<span class="w">  </span><span class="nt">config_directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/ubuntu/f8s</span><span class="w">  </span><span class="c1"># the directory for all the extension config files</span>
 <span class="w">  </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thenewflesh/f8s</span>
-<span class="w">  </span><span class="nt">image_tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">latest</span>
+<span class="w">  </span><span class="nt">image_tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-latest</span>
 </pre></div>
 </div>
 </section>
@@ -296,8 +296,8 @@ accesible via <code class="docutils literal notranslate"><span class="pre">flask
 <span class="p">))</span>
 <span class="k">def</span> <span class="nf">config</span><span class="p">():</span>
     <span class="c1"># cfg is configuration for rest extension</span>
-    <span class="c1"># it is the contents of /etc/rest-config.yaml plus the env vars that start</span>
-    <span class="c1"># REST_, such as REST_CONFIG_PATH and REST_TOKEN</span>
+    <span class="c1"># it is the contents of /home/ubuntu/f8s/rest-config.yaml plus the env vars</span>
+    <span class="c1"># that start with REST_, such as REST_CONFIG_PATH and REST_TOKEN</span>
     <span class="n">cfg</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;rest&#39;</span><span class="p">]</span>  <span class="c1"># key name is lowercase class name</span>
     <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span>
         <span class="n">response</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cfg</span><span class="p">),</span>
