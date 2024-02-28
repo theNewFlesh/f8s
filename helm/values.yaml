@@ -4,16 +4,14 @@ namespace: f8s
 enable:
   namespace: false
   configmap: true
-  secret: false
+  secret: true
   nginx_ingress: false
   traefik_ingress: false
   readiness_probe: true
   liveness_probe: true
 
-configmap: "{}"
-
-secret: |
-  F8S_CONFIG_PATH: /etc/f8s-config.yaml
+extensions:
+  f8s: "{}"
 
 deployment:
   repository: # your f8s repo
@@ -21,6 +19,7 @@ deployment:
   image_pull_policy: IfNotPresent
   memory: 128Mi
   cpu: 200m
+  config_directory: /etc
 
 service:
   port: 80

@@ -51,8 +51,12 @@ spec:
             periodSeconds: 5
           {{- end }}
           volumeMounts:
-            - name: config
-              mountPath: /etc/f8s-config.yaml
+          {{- $dir := .deployment.config_directory -}}
+          {{- range $key, $value := .extensions }}
+            - mountPath: {{ $dir }}/{{ $key }}-config.yaml
+              name: config
+              subPath: {{ $key }}
+          {{- end }}
       volumes:
         - name: config
           configMap:
