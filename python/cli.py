@@ -14,7 +14,7 @@ import re
 REPO_PATH = os.path.join(os.sep, *os.path.realpath(__file__).split(os.sep)[:-2])
 REPO = os.path.split(REPO_PATH)[-1]
 GIT_USER = 'theNewFlesh'
-DOCKER_REGISTRY = 'theNewFlesh/' + REPO
+DOCKER_REGISTRY = 'thenewflesh/' + REPO
 USER = 'ubuntu:ubuntu'
 PORT = 8080
 # ------------------------------------------------------------------------------
