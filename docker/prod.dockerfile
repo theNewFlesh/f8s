@@ -51,9 +51,9 @@ EXPOSE 8080
 USER root
 ENV DEMO_CONFIG_PATH=/etc/f8s/demo-config.yaml
 ENV DEMO_TOKEN=abcdefgh12345678
-RUN echo "\n${CYAN}WRITE DEMO-CONFIG.YAML${CLEAR}"; \
+RUN echo "\n${CYAN}CREATE /ETC/F8S${CLEAR}"; \
     mkdir /etc/f8s && \
-    echo 'foo: bar' > /etc/f8s/demo-config.yaml
+    chmod 666 /etc/f8s
 
 USER ubuntu
 COPY scripts/test_app.py /home/ubuntu/test_app.py
