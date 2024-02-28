@@ -20,8 +20,8 @@ spec:
           imagePullPolicy: {{ .deployment.image_pull_policy }}
           command: ["f8s serve"]
           args:
-            - {{ .app_module_path }}
-            - {{ .app_variable_name }}
+            - {{ .deployment.app_module_path }}
+            - {{ .deployment.app_variable_name }}
           resources:
             requests:
               memory: {{ .deployment.memory }}
