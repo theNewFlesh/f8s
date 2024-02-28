@@ -84,6 +84,9 @@ internal Flask configuration per extension. Relevant yaml files and environment
 variables mapped into the container are aggregated by each extension and
 accesible via `flask.current_app.config[extension_name]` in python.
 
+The helm chart can be used as is for deploying your app or it can copied to a
+separate git repo and modified to your requirements.
+
 ### Example Helm values.yaml
 
 ```yaml
