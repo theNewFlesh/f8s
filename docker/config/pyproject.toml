@@ -34,7 +34,7 @@ dependencies = [
 ]
 
 [project.urls]
-repository = "https://github.com/the-new-flesh/f8s"
+repository = "https://github.com/theNewFlesh/f8s"
 documentation = "https://theNewFlesh.github.io/f8s"
 
 [project.scripts]

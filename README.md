@@ -9,7 +9,7 @@
              alt="github" width="30px" height="30px"
         >
     </a>
-    <a href="https://pypi.org/user/the-new-flesh" rel="nofollow noreferrer">
+    <a href="https://pypi.org/user/theNewFlesh" rel="nofollow noreferrer">
         <img src="https://cdn.iconscout.com/icon/free/png-256/python-2-226051.png"
              alt="pypi" width="30px" height="30px"
         >
@@ -28,8 +28,8 @@
 
 <!-- <img id="logo" src="resources/logo.png" style="max-width: 717px"> -->
 
-[![](https://img.shields.io/badge/License-MIT-F77E70?style=for-the-badge)](https://github.com/the-new-flesh/f8s/blob/master/LICENSE)
-[![](https://img.shields.io/pypi/pyversions/f8s?style=for-the-badge&label=Python&color=A0D17B&logo=python&logoColor=A0D17B)](https://github.com/the-new-flesh/f8s/blob/master/docker/config/pyproject.toml)
+[![](https://img.shields.io/badge/License-MIT-F77E70?style=for-the-badge)](https://github.com/theNewFlesh/f8s/blob/master/LICENSE)
+[![](https://img.shields.io/pypi/pyversions/f8s?style=for-the-badge&label=Python&color=A0D17B&logo=python&logoColor=A0D17B)](https://github.com/theNewFlesh/f8s/blob/master/docker/config/pyproject.toml)
 [![](https://img.shields.io/pypi/v/f8s?style=for-the-badge&label=PyPI&color=5F95DE&logo=pypi&logoColor=5F95DE)](https://pypi.org/project/f8s/)
 [![](https://img.shields.io/pypi/dm/f8s?style=for-the-badge&label=Downloads&color=5F95DE)](https://pepy.tech/project/f8s)
 
@@ -37,7 +37,7 @@
 
 Framework for building K8s-ready Flask applications.
 
-See [documentation](https://thenewflesh.github.io/f8s/) for details.
+See [documentation](https://theNewFlesh.github.io/f8s/) for details.
 
 # Installation
 ### Python
