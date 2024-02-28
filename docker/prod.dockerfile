@@ -48,12 +48,9 @@ ENV PATH=$PATH:/home/ubuntu/.local/bin
 EXPOSE 8080
 
 # setup configmap and secrets
-USER root
-ENV DEMO_CONFIG_PATH=/etc/f8s/demo-config.yaml
+ENV DEMO_CONFIG_PATH=/home/ubuntu/f8s/demo-config.yaml
 ENV DEMO_TOKEN=abcdefgh12345678
-RUN echo "\n${CYAN}CREATE /ETC/F8S${CLEAR}"; \
-    mkdir /etc/f8s && \
-    chmod 666 /etc/f8s
+RUN echo "\n${CYAN}CREATE F8S CONFIG DIRECTORY${CLEAR}"; \
+    mkdir /home/ubuntu/f8s
 
-USER ubuntu
-COPY scripts/test_app.py /home/ubuntu/test_app.py
+COPY --chown=ubuntu:ubuntu scripts/test_app.py /home/ubuntu/test_app.py

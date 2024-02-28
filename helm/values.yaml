@@ -20,7 +20,7 @@ deployment:
   image_pull_policy: IfNotPresent
   memory: 128Mi
   cpu: 200m
-  config_directory: /etc/f8s
+  config_directory: /home/ubuntu/f8s
   app_module_path: /home/ubuntu/test_app.py
   app_variable_name: app
 
