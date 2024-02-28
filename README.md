@@ -77,6 +77,143 @@ Run `bin/f8s --help` for more help on the command line tool.
 
 ---
 
+# App Development
+
+F8s apps are designed to create a parity between ConfigMap/Secret values and
+internal Flask configuration per extension. Relevant yaml files and environment
+variables mapped into the container are aggregated by each extension and
+accesible via `flask.current_app.config[extension_name]` in python.
+
+## Example Helm values.yaml:
+
+```yaml
+extensions:
+  rest: |                 # creates `REST_CONFIG_PATH=/etc/rest-config.yaml` env var
+    allowed-actions:      # `/etc/rest-config.yaml` content
+      - get
+      - post
+  db: |                   # creates `DB_CONFIG_PATH=/etc/db-config.yaml` env var
+    user: admin           # `/etc/db-config.yaml` content
+    tables:
+      - users
+      - groups
+
+secret: |                 # create additional env vars
+  REST_TOKEN: token       # vars need to begin with extension such as REST_ or DB_
+  DB_PASSWORD: pwd
+  DB_TOKEN: token
+
+deployment:
+  config_directory: /etc  # the directory for all the extension config files
+  repository: thenewflesh/f8s
+  image_tag: latest
+```
+
+## Example Python app.py:
+
+```python
+import json
+
+import database  # example database
+import flask
+import flasgger as swg
+
+from f8s.extension import F8s
+import f8s.tools as f8s_tools
+
+
+# DB----------------------------------------------------------------------------
+# blueprint
+DB_API = flask.Blueprint('db', __name__, url_prefix='')
+
+
+# api
+@DB_API.route('/api/v1/query', methods=['POST'])  # flask route decorator
+@swg.swag_from(dict(                              # swagger apidocs decorator
+    parameters=[
+        dict(
+            name='query',
+            type='dict',
+            description='DB query',
+            required=True,
+        )
+    ],
+    responses={
+        200: dict(description='JSON data', content='application/json'),
+        500: dict(description='Internal server error.')
+    }
+))
+def query():
+    data = json.loads(flask.request.json)
+    result = database.query(data)
+    return flask.Response(
+        response=json.dumps(result),
+        mimetype='application/json'
+    )
+
+# F8s extension
+class DB(F8s):    # class name determines env var prefixes
+    api = DB_API  # api class member needs to be assigned to a blueprint
+
+
+# REST--------------------------------------------------------------------------
+# blueprint
+REST_API = flask.Blueprint('rest', __name__, url_prefix='')
+
+
+# api
+@REST_API.route('/api/v1/config', methods=['GET'])  # flask route decorator
+@swg.swag_from(dict(                                # swagger apidocs decorator
+    parameters=[],
+    responses={
+        200: dict(description='Config data', content='application/json'),
+        500: dict(description='Internal server error.')
+    }
+))
+def config():
+    # cfg is configuration for rest extension
+    # it is the contents of /etc/rest-config.yaml plus the env vars that start
+    # REST_, such as REST_CONFIG_PATH and REST_TOKEN
+    cfg = flask.current_app.config['rest']  # key name is lowercase class name
+    return flask.Response(
+        response=json.dumps(cfg),
+        mimetype='application/json'
+    )
+
+
+# F8s extension
+class REST(F8s):    # class name determines env var prefixes
+    api = REST_API  # api class member needs to be assigned to a blueprint
+
+    def validate(self, config):  # additional validation of config dictionary
+        assert isinstance(config['allowed-actions'], list)
+
+
+# HEALTHZ-PROBES----------------------------------------------------------------
+def live_probe():
+    return database.connected()
+
+
+def ready_probe():
+    return True
+
+
+# APP---------------------------------------------------------------------------
+def get_app():
+    # returns a Flask with both DB and REST blueprints and both health probes
+    return f8s_tools.get_app([DB(), REST()], live_probe, ready_probe)
+
+
+app = get_app()  # app variable needs to exist for gunicorn to call
+```
+
+## Serve F8s App
+```bash
+f8s serve /path/to/app.py
+```
+
+---
+
 # Quickstart Guide
 This repository contains a suite commands for the whole development process.
 This includes everything from testing, to documentation generation and
@@ -229,6 +366,13 @@ Its usage pattern is: `f8s COMMAND [ARGS] [FLAGS] [-h --help]`
 Prints BASH completion code to be written to a _f8s completion file
 
 Usage: `f8s bash-completion`
+
+---
+
+### serve
+Serves given F8s application via gunicorn
+
+Usage: `f8s serve app.py app`
 
 ---
 
