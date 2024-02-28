@@ -16,8 +16,8 @@ extensions:
 secret: ""
 
 deployment:
-  repository: # your f8s repo
-  image_tag: # your f8s image tag
+  repository: thenewflesh/f8s
+  image_tag: prod-latest
   image_pull_policy: IfNotPresent
   memory: 128Mi
   cpu: 200m
