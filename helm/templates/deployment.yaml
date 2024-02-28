@@ -18,7 +18,9 @@ spec:
         - name: {{ .name }}
           image: "{{ .deployment.repository }}:{{ .deployment.image_tag }}"
           imagePullPolicy: {{ .deployment.image_pull_policy }}
-          command: ["f8s serve"]
+          command:
+            - f8s
+            - serve
           args:
             - {{ .deployment.app_module_path }}
             - {{ .deployment.app_variable_name }}
