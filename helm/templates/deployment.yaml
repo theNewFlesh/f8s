@@ -18,8 +18,10 @@ spec:
         - name: {{ .name }}
           image: "{{ .deployment.repository }}:{{ .deployment.image_tag }}"
           imagePullPolicy: {{ .deployment.image_pull_policy }}
-          command: []
-          args: []
+          command: ["f8s serve"]
+          args:
+            - {{ app_module_path }}
+            - {{ app_variable_name }}
           resources:
             requests:
               memory: {{ .deployment.memory }}

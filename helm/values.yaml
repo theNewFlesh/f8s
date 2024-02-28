@@ -22,6 +22,8 @@ deployment:
   memory: 128Mi
   cpu: 200m
   config_directory: /etc
+  app_module_path: app.py
+  app_variable_name: app
 
 service:
   port: 80
