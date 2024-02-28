@@ -207,6 +207,25 @@ def get_app():
 app = get_app()  # app variable needs to exist for gunicorn to call
 ```
 
+### Absolute minimum python boilerplate
+```python
+import flask
+
+from f8s.extension import F8s
+import f8s.tools as f8s_tools
+
+API = flask.Blueprint('hello', __name__, url_prefix='')
+
+@API.route('/api/v1/hello')
+def hello():
+    return 'hello'
+
+class Hello(F8s):
+    api = API
+
+app = f8s_tools.get_app([Hello()])
+```
+
 ### Serve F8s App
 
 ```shell
