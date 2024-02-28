@@ -58,6 +58,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#zsh-setup">ZSH Setup</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="#app-development">App Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-helm-values-yaml">Example Helm values.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-python-app-py">Example Python app.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#serve-f8s-app">Serve F8s App</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="#quickstart-guide">Quickstart Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#command-groups">Command Groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#common-commands">Common Commands</a></li>
@@ -70,6 +76,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#production-cli">Production CLI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#bash-completion">bash-completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#serve">serve</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#zsh-completion">zsh-completion</a></li>
 </ul>
 </li>
@@ -193,6 +200,143 @@ tab to cycle through</p></li>
 </ul>
 </li>
 </ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="app-development">
+<h1>App Development<a class="headerlink" href="#app-development" title="Link to this heading">¶</a></h1>
+<p>F8s apps are designed to create a parity between ConfigMap/Secret values and
+internal Flask configuration per extension. Relevant yaml files and environment
+variables mapped into the container are aggregated by each extension and
+accesible via <code class="docutils literal notranslate"><span class="pre">flask.current_app.config[extension_name]</span></code> in python.</p>
+<section id="example-helm-values-yaml">
+<h2>Example Helm values.yaml<a class="headerlink" href="#example-helm-values-yaml" title="Link to this heading">¶</a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">extensions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">rest</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w">                 </span><span class="c1"># creates `REST_CONFIG_PATH=/etc/rest-config.yaml` env var</span>
+<span class="w">    </span><span class="no">allowed-actions:      # `/etc/rest-config.yaml` content</span>
+<span class="w">      </span><span class="no">- get</span>
+<span class="w">      </span><span class="no">- post</span>
+<span class="w">  </span><span class="nt">db</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w">                   </span><span class="c1"># creates `DB_CONFIG_PATH=/etc/db-config.yaml` env var</span>
+<span class="w">    </span><span class="no">user: admin           # `/etc/db-config.yaml` content</span>
+<span class="w">    </span><span class="no">tables:</span>
+<span class="w">      </span><span class="no">- users</span>
+<span class="w">      </span><span class="no">- groups</span>
+
+<span class="nt">secret</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w">                 </span><span class="c1"># create additional env vars</span>
+<span class="w">  </span><span class="no">REST_TOKEN: token       # vars need to begin with extension such as REST_ or DB_</span>
+<span class="w">  </span><span class="no">DB_PASSWORD: pwd</span>
+<span class="w">  </span><span class="no">DB_TOKEN: token</span>
+
+<span class="nt">deployment</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">config_directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc</span><span class="w">  </span><span class="c1"># the directory for all the extension config files</span>
+<span class="w">  </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thenewflesh/f8s</span>
+<span class="w">  </span><span class="nt">image_tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">latest</span>
+</pre></div>
+</div>
+</section>
+<section id="example-python-app-py">
+<h2>Example Python app.py<a class="headerlink" href="#example-python-app-py" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">database</span>  <span class="c1"># example database</span>
+<span class="kn">import</span> <span class="nn">flask</span>
+<span class="kn">import</span> <span class="nn">flasgger</span> <span class="k">as</span> <span class="nn">swg</span>
+
+<span class="kn">from</span> <span class="nn">f8s.extension</span> <span class="kn">import</span> <span class="n">F8s</span>
+<span class="kn">import</span> <span class="nn">f8s.tools</span> <span class="k">as</span> <span class="nn">f8s_tools</span>
+
+
+<span class="c1"># DB----------------------------------------------------------------------------</span>
+<span class="c1"># blueprint</span>
+<span class="n">DB_API</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;db&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># api</span>
+<span class="nd">@DB_API</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/v1/query&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>  <span class="c1"># flask route decorator</span>
+<span class="nd">@swg</span><span class="o">.</span><span class="n">swag_from</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>                              <span class="c1"># swagger apidocs decorator</span>
+    <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;query&#39;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;dict&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;DB query&#39;</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">],</span>
+    <span class="n">responses</span><span class="o">=</span><span class="p">{</span>
+        <span class="mi">200</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;JSON data&#39;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">),</span>
+        <span class="mi">500</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Internal server error.&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">))</span>
+<span class="k">def</span> <span class="nf">query</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span>
+        <span class="n">response</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">result</span><span class="p">),</span>
+        <span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span>
+    <span class="p">)</span>
+
+<span class="c1"># F8s extension</span>
+<span class="k">class</span> <span class="nc">DB</span><span class="p">(</span><span class="n">F8s</span><span class="p">):</span>    <span class="c1"># class name determines env var prefixes</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="n">DB_API</span>  <span class="c1"># api class member needs to be assigned to a blueprint</span>
+
+
+<span class="c1"># REST--------------------------------------------------------------------------</span>
+<span class="c1"># blueprint</span>
+<span class="n">REST_API</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;rest&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># api</span>
+<span class="nd">@REST_API</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/v1/config&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>  <span class="c1"># flask route decorator</span>
+<span class="nd">@swg</span><span class="o">.</span><span class="n">swag_from</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>                                <span class="c1"># swagger apidocs decorator</span>
+    <span class="n">parameters</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">responses</span><span class="o">=</span><span class="p">{</span>
+        <span class="mi">200</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Config data&#39;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">),</span>
+        <span class="mi">500</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Internal server error.&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">))</span>
+<span class="k">def</span> <span class="nf">config</span><span class="p">():</span>
+    <span class="c1"># cfg is configuration for rest extension</span>
+    <span class="c1"># it is the contents of /etc/rest-config.yaml plus the env vars that start</span>
+    <span class="c1"># REST_, such as REST_CONFIG_PATH and REST_TOKEN</span>
+    <span class="n">cfg</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;rest&#39;</span><span class="p">]</span>  <span class="c1"># key name is lowercase class name</span>
+    <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span>
+        <span class="n">response</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cfg</span><span class="p">),</span>
+        <span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># F8s extension</span>
+<span class="k">class</span> <span class="nc">REST</span><span class="p">(</span><span class="n">F8s</span><span class="p">):</span>    <span class="c1"># class name determines env var prefixes</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="n">REST_API</span>  <span class="c1"># api class member needs to be assigned to a blueprint</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>  <span class="c1"># additional validation of config dictionary</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;allowed-actions&#39;</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span>
+
+
+<span class="c1"># HEALTHZ-PROBES----------------------------------------------------------------</span>
+<span class="k">def</span> <span class="nf">live_probe</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">database</span><span class="o">.</span><span class="n">connected</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">ready_probe</span><span class="p">():</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="c1"># APP---------------------------------------------------------------------------</span>
+<span class="k">def</span> <span class="nf">get_app</span><span class="p">():</span>
+    <span class="c1"># returns a Flask with both DB and REST blueprints and both health probes</span>
+    <span class="k">return</span> <span class="n">f8s_tools</span><span class="o">.</span><span class="n">get_app</span><span class="p">([</span><span class="n">DB</span><span class="p">(),</span> <span class="n">REST</span><span class="p">()],</span> <span class="n">live_probe</span><span class="p">,</span> <span class="n">ready_probe</span><span class="p">)</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">get_app</span><span class="p">()</span>  <span class="c1"># app variable needs to exist for gunicorn to call</span>
+</pre></div>
+</div>
+</section>
+<section id="serve-f8s-app">
+<h2>Serve F8s App<a class="headerlink" href="#serve-f8s-app" title="Link to this heading">¶</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>f8s<span class="w"> </span>serve<span class="w"> </span>/path/to/app.py
+</pre></div>
+</div>
 </section>
 </section>
 <hr class="docutils" />
@@ -545,6 +689,12 @@ Commands generally do not expect any arguments or flags.</p>
 <h2>bash-completion<a class="headerlink" href="#bash-completion" title="Link to this heading">¶</a></h2>
 <p>Prints BASH completion code to be written to a _f8s completion file</p>
 <p>Usage: <code class="docutils literal notranslate"><span class="pre">f8s</span> <span class="pre">bash-completion</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="serve">
+<h2>serve<a class="headerlink" href="#serve" title="Link to this heading">¶</a></h2>
+<p>Serves given F8s application via gunicorn</p>
+<p>Usage: <code class="docutils literal notranslate"><span class="pre">f8s</span> <span class="pre">serve</span> <span class="pre">app.py</span> <span class="pre">app</span></code></p>
 </section>
 <hr class="docutils" />
 <section id="zsh-completion">
