@@ -47,4 +47,13 @@ RUN echo "\n${CYAN}INSTALL F8S{CLEAR}"; \
 ENV PATH=$PATH:/home/ubuntu/.local/bin
 EXPOSE 8080
 
+# setup configmap and secrets
+USER root
+ENV DEMO_CONFIG_PATH=/etc/f8s/demo-config.yaml
+ENV DEMO_TOKEN=abcdefgh12345678
+RUN echo "\n${CYAN}WRITE DEMO-CONFIG.YAML${CLEAR}"; \
+    mkdir /etc/f8s && \
+    echo 'foo: bar' > /etc/f8s/demo-config.yaml
+
+USER ubuntu
 COPY scripts/test_app.py /home/ubuntu/test_app.py
