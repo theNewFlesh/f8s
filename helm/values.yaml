@@ -10,8 +10,7 @@ enable:
   readiness_probe: true
   liveness_probe: true
 
-extensions:
-  f8s: "{}"
+extensions: ""
 
 secret: ""
 
@@ -22,7 +21,7 @@ deployment:
   memory: 128Mi
   cpu: 200m
   config_directory: /etc/f8s
-  app_module_path: app.py
+  app_module_path: /home/ubuntu/test_app.py
   app_variable_name: app
 
 service:
