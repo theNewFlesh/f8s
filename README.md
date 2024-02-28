@@ -88,12 +88,12 @@ accesible via `flask.current_app.config[extension_name]` in python.
 
 ```yaml
 extensions:
-  rest: |                 # creates `REST_CONFIG_PATH=/etc/rest-config.yaml` env var
-    allowed-actions:      # `/etc/rest-config.yaml` content
+  rest: |                 # creates `REST_CONFIG_PATH=/etc/f8s/rest-config.yaml` env var
+    allowed-actions:      # `/etc/f8s/rest-config.yaml` content
       - get
       - post
-  db: |                   # creates `DB_CONFIG_PATH=/etc/db-config.yaml` env var
-    user: admin           # `/etc/db-config.yaml` content
+  db: |                   # creates `DB_CONFIG_PATH=/etc/f8s/db-config.yaml` env var
+    user: admin           # `/etc/f8s/db-config.yaml` content
     tables:
       - users
       - groups
@@ -104,7 +104,7 @@ secret: |                 # create additional env vars
   DB_TOKEN: token
 
 deployment:
-  config_directory: /etc  # the directory for all the extension config files
+  config_directory: /etc/f8s  # the directory for all the extension config files
   repository: thenewflesh/f8s
   image_tag: latest
 ```
@@ -172,7 +172,7 @@ REST_API = flask.Blueprint('rest', __name__, url_prefix='')
 ))
 def config():
     # cfg is configuration for rest extension
-    # it is the contents of /etc/rest-config.yaml plus the env vars that start
+    # it is the contents of /etc/f8s/rest-config.yaml plus the env vars that start
     # REST_, such as REST_CONFIG_PATH and REST_TOKEN
     cfg = flask.current_app.config['rest']  # key name is lowercase class name
     return flask.Response(
