@@ -7,8 +7,8 @@ enable:
   secret: true
   nginx_ingress: false
   traefik_ingress: false
-  readiness_probe: true
-  liveness_probe: true
+  readiness_probe: false
+  liveness_probe: false
 
 extensions: ""
 
