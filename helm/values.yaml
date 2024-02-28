@@ -13,6 +13,8 @@ enable:
 extensions:
   f8s: "{}"
 
+secret: ""
+
 deployment:
   repository: # your f8s repo
   image_tag: # your f8s image tag
