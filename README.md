@@ -208,6 +208,7 @@ app = get_app()  # app variable needs to exist for gunicorn to call
 ```
 
 ### Absolute minimum python boilerplate
+
 ```python
 import flask
 
