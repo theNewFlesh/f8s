@@ -142,18 +142,6 @@ ENV LC_ALL "C.UTF-8"
 FROM base AS dev
 USER root
 
-# install gcc
-ENV CC=gcc
-ENV CXX=g++
-RUN echo "\n${CYAN}INSTALL GCC${CLEAR}"; \
-    apt update && \
-    apt install -y \
-        build-essential \
-        g++ \
-        gcc \
-        zlib1g-dev && \
-    rm -rf /var/lib/apt/lists/*
-
 USER ubuntu
 WORKDIR /home/ubuntu
 
