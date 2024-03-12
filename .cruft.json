@@ -1,0 +1,47 @@
+{
+  "template": "https://github.com/theNewFlesh/cookiecutter-datalus",
+  "commit": "2059f685473fc41b6d4b0083184d85cdf646a249",
+  "checkout": null,
+  "skip": [
+    "docs/**/*",
+    "public/**/*",
+    "docker/config/dev.lock",
+    "docker/config/prod.lock",
+    "docker/config/build.yaml"
+  ],
+  "context": {
+    "cookiecutter": {
+      "author": "Alex Braun",
+      "description": "Framework for building K8s-ready Flask applications.",
+      "docker_registry": "dockerhub",
+      "email": "alexander.g.braun@gmail.com",
+      "git_host": "github",
+      "git_organization": "theNewFlesh",
+      "git_user": "theNewFlesh",
+      "include_black": "no",
+      "include_gcc": "no",
+      "include_helm": "yes",
+      "include_mkdocs": "no",
+      "include_nvidia": "no",
+      "include_openexr": "no",
+      "include_prod_cli": "yes",
+      "include_prod_envs": "yes",
+      "include_rsync": "no",
+      "include_tensorflow": "no",
+      "include_vscode_server": "no",
+      "initial_repo_version": "0.1.0",
+      "keywords": "Flask, Kubernetes, K8s, F8s, Helm, ArgoCD",
+      "organization_url": "github.com",
+      "port_prefix": 72,
+      "python_max_version": 10,
+      "python_min_version": 10,
+      "repo_type": "flask",
+      "repo": "f8s",
+      "volume": "",
+      "website": "http://www.alexgbraun.com",
+      "year": 2024,
+      "_template": "https://github.com/theNewFlesh/cookiecutter-datalus"
+    }
+  },
+  "directory": null
+}
