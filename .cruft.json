@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/theNewFlesh/cookiecutter-datalus",
-  "commit": "852a7bb391618ca9a1e4322d87182d211c1a6dff",
+  "commit": "08042f8db7a11c13e3f75fa65489ec916e82afe4",
   "checkout": null,
   "skip": [
     "docs/**/*",
@@ -32,14 +32,14 @@
       "initial_repo_version": "0.1.0",
       "keywords": "Flask, Kubernetes, K8s, F8s, Helm, ArgoCD",
       "organization_url": "github.com",
-      "port_prefix": 72,
-      "python_max_version": 10,
-      "python_min_version": 10,
+      "port_prefix": "72",
+      "python_max_version": "10",
+      "python_min_version": "10",
       "repo_type": "flask",
       "repo": "f8s",
       "volume": "",
       "website": "http://www.alexgbraun.com",
-      "year": 2024,
+      "year": "2024",
       "_template": "https://github.com/theNewFlesh/cookiecutter-datalus"
     }
   },
