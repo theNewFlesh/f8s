@@ -93,7 +93,7 @@ def get_info():
     quickstart              - Display quickstart guide
     session-lab             - Run jupyter lab server
     session-python          - Run python session with dev dependencies
-    session-server       - Run application server inside Docker container
+    session-server          - Run application server inside Docker container
     state                   - State of repository and Docker container
     test-coverage           - Generate test coverage report
     test-dev                - Run all tests
@@ -377,6 +377,7 @@ def build_prod_command():
                 --label "git-user={git_user}"
                 --label "git-branch=$(git branch --show-current)"
                 --label "git-commit=$(git rev-parse HEAD)"
+                --build-arg VERSION="$VERSION"
                 --tag {repo}:prod .;
             cd ..
         '''),
