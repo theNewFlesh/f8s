@@ -369,7 +369,6 @@ def build_prod_command():
         str: Command to build prod image.
     '''
     cmd = line('''
-        export DOCKER_BUILDKIT=1;
         cd docker;
         docker build
             --force-rm
