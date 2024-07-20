@@ -39,34 +39,30 @@ Framework for building K8s-ready Flask applications.
 
 See [documentation](https://theNewFlesh.github.io/f8s/) for details.
 
-# Installation
-### Python
-`pip install f8s`
+# Installation for Developers
 
 ### Docker
-1. Install [docker-desktop](https://docs.docker.com/desktop/)
-2. `docker pull theNewFlesh/f8s:[version]`
-
-### Docker For Developers
 1. Install [docker-desktop](https://docs.docker.com/desktop/)
 2. Ensure docker-desktop has at least 4 GB of memory allocated to it.
 3. `git clone git@github.com:theNewFlesh/f8s.git`
 4. `cd f8s`
 5. `chmod +x bin/f8s`
 6. `bin/f8s docker-start`
+   - If building on a M1 Mac run `export DOCKER_DEFAULT_PLATFORM=linux/amd64` first.
 
 The service should take a few minutes to start up.
 
 Run `bin/f8s --help` for more help on the command line tool.
 
 ### ZSH Setup
-
 1. `bin/f8s` must be run from this repository's top level directory.
 2. Therefore, if using zsh, it is recommended that you paste the following line
     in your ~/.zshrc file:
     - `alias f8s="cd [parent dir]/f8s; bin/f8s"`
     - Replace `[parent dir]` with the parent directory of this repository
-3. Running the `zsh-complete` command will enable tab completions of the cli
+3. Consider adding the following line to your ~/.zshrc if you are using a M1 Mac:
+    - `export DOCKER_DEFAULT_PLATFORM=linux/amd64`
+4. Running the `zsh-complete` command will enable tab completions of the cli
    commands, in the next shell session.
 
    For example:
@@ -74,6 +70,15 @@ Run `bin/f8s --help` for more help on the command line tool.
      tab to cycle through
    - `f8s docker-[tab]` will show you only the cli options that begin with
      "docker-"
+
+# Installation for Production
+
+### Python
+`pip install f8s`
+
+### Docker
+1. Install [docker-desktop](https://docs.docker.com/desktop/)
+2. `docker pull theNewFlesh/f8s:[version]`
 
 ---
 
@@ -311,7 +316,8 @@ The following is a complete list of all available development commands:
 | build-publish           | Run production tests first then publish pip package of repo to PyPi |
 | build-test              | Build test version of repo for prod testing                         |
 | docker-build            | Build Docker image                                                  |
-| docker-build-from-cache | Build Docker image from cached image                                |
+| docker-build-from-cache | Build Docker image from registry cache                              |
+| docker-build-no-cache   | Build Docker image without cache                                    |
 | docker-build-prod       | Build production image                                              |
 | docker-container        | Display the Docker container id                                     |
 | docker-destroy          | Shutdown container and destroy its image                            |
