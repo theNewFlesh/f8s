@@ -1,8 +1,8 @@
-version: "3.8"
 services:
   f8s:
     container_name: f8s
     image: f8s:dev
+    platform: linux/amd64
     build:
       context: .
       dockerfile: dev.dockerfile

@@ -5,7 +5,7 @@ source_rules:
   - path: /home/ubuntu/f8s/python/f8s
     include: "\\.py$"
   - path: /home/ubuntu/f8s/docker/config
-    include: "flake8|prod.lock"
+    include: "prod\\.lock"
     exclude: "cache|__pypackages__"
   - path: /home/ubuntu/f8s/resources
     include: ".*"
@@ -21,7 +21,7 @@ rename_rules:
     replace: "pdm.lock"
 group_rules:
   - name: test
-    regex: "(test_app|__init__|_test)\\.py$|flake8\\.ini$|resources|\\.lock$"
+    regex: "(test_app|__init__|_test)\\.py$|resources|\\.lock$"
   - name: prod
     regex: "__init__\\.py$"
 line_rules:
